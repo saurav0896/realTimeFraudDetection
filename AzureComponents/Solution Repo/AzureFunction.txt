@@ -1,0 +1,105 @@
+#r "Newtonsoft.Json"
+
+using System;
+using System.Net;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Configuration;
+
+//SNOW Incident Table
+class contentInfo
+    {
+    public string assigned_to {get; set;}
+    public string assignment_group {get; set;}
+    public string short_description {get; set;}
+    public string description {get; set;}
+    }
+
+//SNOW Block List Table
+class blockListInfo
+    {
+    public string u_time {get; set;}
+    public string u_caller_imsi_number {get; set;}
+    public string u_caller_number_1 {get; set;}
+    public string u_location {get; set;}
+    public string u_caller_number_2 {get; set;}
+    public string u_location2 {get; set;}
+    }
+
+//Main Function Body
+public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
+{
+    log.Info($"C# HTTP trigger function processed a request. RequestUri={req.RequestUri}");
+
+    // Get the request body
+    dynamic dataArray = await req.Content.ReadAsAsync<object>();
+
+    // Handle empty input
+    if (dataArray is null || dataArray.Count == 0)
+    {
+        log.Info("Received an empty request body...");
+        return req.CreateResponse(HttpStatusCode.NoContent);
+    }
+
+    // Throw an HTTP Request Entity Too Large exception when the incoming batch(dataArray) is greater than 256 KB. Make sure that the size value is consistent with the value entered in the Stream Analytics portal.
+    if (dataArray.ToString().Length > 262144)
+    {
+        return new HttpResponseMessage(HttpStatusCode.RequestEntityTooLarge);
+    }
+    
+    
+    //Assign Data from Stream to SNOW Incident
+    for(var i = 0 ; i < dataArray.Count ; i++)
+    {
+        var descriptionValue = $"Time - {dataArray[i].Time} ,Caller IMSI Number - {dataArray[i].IMSINum} , Caller No.1 - {dataArray[i].CallingNum1} Location - {dataArray[i].Switch1} , Caller No.2 - {dataArray[i].CallingNum2} Location - {dataArray[i].Switch2}";
+        log.Info($"String - {descriptionValue}");
+
+        // Calling REST API for SNOW Incident
+        contentInfo body = new contentInfo()
+        {
+           assigned_to = "",
+           assignment_group = "IT Securities",
+           short_description = "Fraud Calls Detected",
+           description = descriptionValue
+        }; 
+        string bodyContent = JsonConvert.SerializeObject(body);
+        var content = new StringContent(bodyContent, Encoding.UTF8, "application/json");
+        var _httpClient = new HttpClient();
+        var url = "https://dev94135.service-now.com/api/now/table/incident";
+        var byteArray = Encoding.ASCII.GetBytes("admin:Zensar@123");
+        _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        var response = await _httpClient.PostAsync(url, content);
+        var result = await response.Content.ReadAsStringAsync();
+        log.Info($"REST Incident Output - {result}");
+
+        //Calling REST API to insert data in Block List Table
+        blockListInfo blockBody = new blockListInfo()
+        {
+            u_time = dataArray[i].Time,
+            u_caller_imsi_number = dataArray[i].IMSINum,
+            u_caller_number_1 = dataArray[i].CallingNum1,
+            u_location = dataArray[i].Switch1,
+            u_caller_number_2 = dataArray[i].CallingNum2,
+            u_location2 = dataArray[i].Switch2
+        };
+        string blockBodyContent = JsonConvert.SerializeObject(blockBody);
+        var blockContent = new StringContent(blockBodyContent, Encoding.UTF8, "application/json");
+        var _httpClient1 = new HttpClient();
+        var blockUrl = "https://dev94135.service-now.com/api/now/table/u_fraud_call_list";
+        var blockByteArray = Encoding.ASCII.GetBytes("admin:Zensar@123");
+        _httpClient1.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(blockByteArray));
+        var blockresponse = await _httpClient1.PostAsync(blockUrl, blockContent);
+        var blockresult = await blockresponse.Content.ReadAsStringAsync();
+        log.Info($"REST Block List Output - {blockresult}");
+    }
+
+    log.Info($"Message Count {dataArray.Count}");
+    // log.Info($"Message Array {dataArray}");
+
+
+    return new HttpResponseMessage(HttpStatusCode.OK);
+}

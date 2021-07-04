@@ -1,0 +1,54 @@
+{
+  "name": "mega-shop",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "prod": "nexe server/index.js"
+  },
+  "main": "server/index.js",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "core-js": "^3.6.5",
+    "serve-static": "^1.14.1",
+    "vue": "^2.6.11",
+    "vue-router": "^3.2.0",
+    "vue-vanta": "0.0.1",
+    "vuelidate": "^0.7.6",
+    "vuetify": "^2.2.11",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-plugin-router": "~4.4.0",
+    "@vue/cli-plugin-vuex": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-vue": "^6.2.2",
+    "nexe": "^3.3.7",
+    "node-sass": "^4.12.0",
+    "prettier": "^1.19.1",
+    "sass": "^1.19.0",
+    "sass-loader": "^8.0.2",
+    "vue-cli-plugin-vuetify": "~2.0.8",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.3.0"
+  },
+  "window": {
+    "title": "Test App",
+    "toolbar": true,
+    "width": 1000,
+    "height": 1000,
+    "min_width": 1000,
+    "min_height": 1000,
+    "max_width": 1000,
+    "max_height": 1000,
+    "position": "mouse"
+  }
+}
