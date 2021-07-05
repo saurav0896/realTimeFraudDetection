@@ -50,6 +50,9 @@ This is a complete solution on Real Time Fraud Detection , Analysis , Auto Incid
    The following example will generate 1000 events with a 20 percent probability of fraud over the course of 2 hours.
 
        telcodatagen.exe 1000 .2 2
+   
+   ## Simulated Call Data
+   ![](Images/CallData.PNG)
   
    You will see records being sent to your Event Hub. Some key fields that we will be using in this real-time fraud detection application are defined here:
 
