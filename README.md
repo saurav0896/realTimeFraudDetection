@@ -98,7 +98,7 @@ This is a complete solution on Real Time Fraud Detection , Analysis , Auto Incid
    **NOTE** Since server is up and running can check the deployment on (http://localhost:8080)
   
    ## Ecommerce Portal
-   ![](Images/web.jpg)
+   ![](Images/web.PNG)
   
   
  9. CORS enable on Service Now
