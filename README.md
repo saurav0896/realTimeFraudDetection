@@ -111,7 +111,8 @@ This is a complete solution on Real Time Fraud Detection , Analysis , Auto Incid
   
 Now Solution is up and running which will detect the fraud and will provide realistice view to it.
    
-       
+## Reference Used
+   - Azure Documentation on Real Time Fraud, [LINK](https://docs.microsoft.com/en-us/azure/architecture/example-scenario/data/fraud-detection)
   
   
    
